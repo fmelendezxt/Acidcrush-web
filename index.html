@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AcidCrush | Tomatodos y Vasos Térmicos</title>
+  <style>
+    :root {
+      --bg: #0b0d0c;
+      --card: #141816;
+      --text: #f4f7f5;
+      --muted: #9aa59f;
+      --accent: #a6ff00;
+      --accent-text: #0b0d0c;
+      --border: #252c28;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    body { background: var(--bg); color: var(--text); line-height: 1.5; padding-bottom: 4rem; }
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 1.25rem; border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; background: rgba(11, 13, 12, 0.92); backdrop-filter: blur(8px);
+    }
+    .brand { font-size: 1.25rem; font-weight: 800; letter-spacing: 0.5px; }
+    .brand span { color: var(--accent); }
+    .hero { text-align: center; padding: 2.2rem 1.25rem 1.5rem; max-width: 720px; margin: 0 auto; }
+    .hero h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+    .hero h1 span { color: var(--accent); }
+    .hero p { color: var(--muted); font-size: 0.98rem; }
+    .grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem; max-width: 1100px; margin: 1.5rem auto 0; padding: 0 1.25rem;
+    }
+    .card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 1.25rem; display: flex; flex-direction: column; justify-content: space-between; gap: 1rem;
+    }
+    .img-box {
+      background: #1c221f; border-radius: 12px; aspect-ratio: 1 / 1;
+      display: flex; align-items: center; justify-content: center; overflow: hidden;
+    }
+    .img-box img { width: 100%; height: 100%; object-fit: cover; }
+    .title { font-size: 1.1rem; font-weight: 700; }
+    .cap { color: var(--muted); font-size: 0.88rem; margin-top: 0.15rem; }
+    .price { color: var(--accent); font-size: 1.2rem; font-weight: 800; margin-top: 0.4rem; }
+    .colors { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.6rem; }
+    .color-btn {
+      background: transparent; color: var(--text); border: 1px solid var(--border);
+      padding: 0.28rem 0.65rem; border-radius: 999px; font-size: 0.78rem; cursor: pointer;
+    }
+    .color-btn.active { background: var(--accent); color: var(--accent-text); border-color: var(--accent); font-weight: 700; }
+    .pay-note { font-size: 0.78rem; color: var(--muted); }
+    .buy-btn {
+      display: block; text-align: center; text-decoration: none;
+      background: var(--accent); color: var(--accent-text); font-weight: 800;
+      padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.95rem;
+    }
+    footer { text-align: center; color: var(--muted); font-size: 0.85rem; margin-top: 3rem; padding: 0 1rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">ACID<span>CRUSH</span>.PE</div>
+    <div style="font-size:0.85rem; color:var(--muted);">Yape • Contra entrega</div>
+  </header>
+
+  <section class="hero">
+    <h1>Tu hidratación con actitud en <span>AcidCrush</span></h1>
+    <p>Elige tu modelo, capacidad y color favorito y coordina directo por WhatsApp.</p>
+  </section>
+
+  <main class="grid" id="catalogo"></main>
+
+  <footer>
+    AcidCrush • Pagos por Yape o pago contra entrega • Envíos a todo el Perú
+  </footer>
+
+  <script>
+    const WHATSAPP_URL = "https://wa.me/qr/R5MRMGAZGIBSK1";
+
+    const PRODUCTOS = [
+      {
+        id: "quencher-h20-30",
+        nombre: "Quencher H2.0",
+        capacidad: "30 oz (0.89 L)",
+        precio: 119,
+        colores: ["Negro Mate", "Verde Lima", "Crema", "Rosa", "Azul"],
+        imagen: "imagenes/quencher-h20-30.jpg"
+      },
+      {
+        id: "quencher-h20-40",
+        nombre: "Quencher H2.0",
+        capacidad: "40 oz (1.18 L)",
+        precio: 129,
+        colores: ["Negro Mate", "Verde Lima", "Crema", "Rosa", "Azul"],
+        imagen: "imagenes/quencher-h20-40.jpg"
+      },
+      {
+        id: "protour-30",
+        nombre: "Quencher ProTour",
+        capacidad: "30 oz (0.89 L)",
+        precio: 169,
+        colores: ["Negro Mate", "Verde Lima", "Grafito", "Blanco"],
+        imagen: "imagenes/protour-30.jpg"
+      },
+      {
+        id: "protour-40",
+        nombre: "Quencher ProTour",
+        capacidad: "40 oz (1.18 L)",
+        precio: 179,
+        colores: ["Negro Mate", "Verde Lima", "Grafito", "Blanco"],
+        imagen: "imagenes/protour-40.jpg"
+      },
+      {
+        id: "iceflow-30",
+        nombre: "IceFlow Flip Straw",
+        capacidad: "30 oz (0.89 L)",
+        precio: 169,
+        colores: ["Negro Mate", "Verde Lima", "Celeste", "Coral"],
+        imagen: "imagenes/iceflow-30.jpg"
+      },
+      {
+        id: "iceflow-40",
+        nombre: "IceFlow Flip Straw",
+        capacidad: "40 oz (1.18 L)",
+        precio: 179,
+        colores: ["Negro Mate", "Verde Lima", "Celeste", "Coral"],
+        imagen: "imagenes/iceflow-40.jpg"
+      },
+      {
+        id: "aerolight-24",
+        nombre: "AeroLight Flip Straw",
+        capacidad: "24 oz (0.71 L)",
+        precio: 129,
+        colores: ["Negro Mate", "Verde Lima", "Plata", "Lila"],
+        imagen: "imagenes/aerolight-24.jpg"
+      },
+      {
+        id: "shaker-20",
+        nombre: "Shaker",
+        capacidad: "20 oz (0.59 L)",
+        precio: 169,
+        colores: ["Negro Mate", "Verde Lima", "Gris Oscuro"],
+        imagen: "imagenes/shaker-20.jpg"
+      }
+    ];
+
+    const contenedor = document.getElementById("catalogo");
+
+    PRODUCTOS.forEach((prod, idx) => {
+      let colorSeleccionado = prod.colores[0];
+      const card = document.createElement("article");
+      card.className = "card";
+
+      const buildWaLink = (color) => {
+        const msg = `Hola AcidCrush, quiero consultar por: ${prod.nombre} (${prod.capacidad}) - Color: ${color} - Precio: S/ ${prod.precio}. Pago: Yape o contra entrega.`;
+        return `${WHATSAPP_URL}?text=${encodeURIComponent(msg)}`;
+      };
+
+      card.innerHTML = `
+        <div>
+          <div class="img-box">
+            <img src="${prod.imagen}" alt="${prod.nombre} ${prod.capacidad}" onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=color:#9aa59f;font-size:0.85rem;padding:1rem;text-align:center>Coloca tu foto en<br>${prod.imagen}</span>';" />
+          </div>
+          <div style="margin-top:0.85rem;">
+            <div class="title">${prod.nombre}</div>
+            <div class="cap">${prod.capacidad}</div>
+            <div class="price">S/ ${prod.precio}</div>
+            <div class="colors" id="colores-${idx}"></div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0.6rem;">
+          <div class="pay-note">Coordina pago por Yape o pago contra entrega.</div>
+          <a class="buy-btn" id="btn-${idx}" href="${buildWaLink(colorSeleccionado)}" target="_blank" rel="noopener">
+            Comprar por WhatsApp
+          </a>
+        </div>
+      `;
+
+      contenedor.appendChild(card);
+
+      const colorsDiv = card.querySelector(`#colores-${idx}`);
+      const buyBtn = card.querySelector(`#btn-${idx}`);
+
+      prod.colores.forEach((color, cIdx) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = `color-btn ${cIdx === 0 ? "active" : ""}`;
+        btn.textContent = color;
+        btn.addEventListener("click", () => {
+          colorsDiv.querySelectorAll(".color-btn").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          colorSeleccionado = color;
+          buyBtn.href = buildWaLink(colorSeleccionado);
+        });
+        colorsDiv.appendChild(btn);
+      });
+    });
+  </script>
+</body>
+</html>
